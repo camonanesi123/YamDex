@@ -1,6 +1,9 @@
-# 🏗 scaffold-eth
+# 🏗 Yam Dex
 
-> TL;DR: **fork this repo** for an Ethereum dev stack focused on _fast product iteration_
+> TL;DR: **fork from Austin Griffith  repo** for an Ethereum dev stack focused on _fast product iteration_
+
+add my personal perspective in code. construct a minimal viable DEX 
+
 
 Chapter 0: 🧫 [Building on Ethereum in 2020](https://medium.com/@austin_48503/building-on-ethereum-in-2020-dca52eda5f00)
 
