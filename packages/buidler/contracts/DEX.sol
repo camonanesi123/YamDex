@@ -25,10 +25,27 @@ function init(uint256 tokens) public payable returns (uint256) {
 //计算价格 “price” is basically how much of the resulting output asset you will get if you put in a certain amount of the input asset.
 function price(uint256 input_amount, uint256 input_reserve, uint256 output_reserve) public view returns (uint256) {
   uint256 input_amount_with_fee = input_amount.mul(997);
+  // 1000 * 997 = 997000
+
   //x*y = k （numerator) const
+
+  // (x+delta(x)) * (y-delta(y)) = x*y
+  // calculate delta(y) = y - x*y/(x+delta(x))
+  // gained = (y*x+y*delta(x)-x*y)/(x+delta(x))
+  // = y*delta(x) / (x+delta(x))
+
+  // assign numerator = y*delta(x)
   uint256 numerator = input_amount_with_fee.mul(output_reserve);
+  //997000*1000000
+
+  //流动性池里面的input_reserve + 需要换的input_amount_with_fee
   uint256 denominator = input_reserve.mul(1000).add(input_amount_with_fee);
+  //1000000*1000+997000
+
+ // gained = numerator / denominator;
   return numerator / denominator;
+  //997000*1000000/1000000*1000+997000
+
 }
 //用ETH购买山寨币
 function ethToToken() public payable returns (uint256) {
