@@ -15,7 +15,7 @@ async function main() {
   const dex = await deploy("DEX",[balloons.address])
 
   // paste in your address here to get 10 balloons on deploy:
-  await balloons.transfer("0xD287D010eb975A21639407D04E7DAaD1216fe1F9",""+(10*10**18))
+  await balloons.transfer("0x9Cb4c5c1785f83A0a695C7EA7EEaD770d70d8AD8",""+(10*10**18))
 
   // uncomment to init DEX on deploy:
   console.log("Approving DEX ("+dex.address+") to take Balloons from main account...")

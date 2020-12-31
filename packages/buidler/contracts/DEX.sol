@@ -22,7 +22,7 @@ function init(uint256 tokens) public payable returns (uint256) {
   require(token.transferFrom(msg.sender, address(this), tokens));
   return totalLiquidity;
 }
-//计算价格 “price” is basically how much of the resulting output asset you will get if you put in a certain amount of the input asset.
+//计算价格 扔进去好多数目的A 出来好多数目的B
 function price(uint256 input_amount, uint256 input_reserve, uint256 output_reserve) public view returns (uint256) {
   uint256 input_amount_with_fee = input_amount.mul(997);
   // 1000 * 997 = 997000
@@ -51,22 +51,29 @@ function price(uint256 input_amount, uint256 input_reserve, uint256 output_reser
 function ethToToken() public payable returns (uint256) {
   //统计交易所里面保留的山寨币数目
   uint256 token_reserve = token.balanceOf(address(this));
-  //计算能买多少山寨币
+
+  //计算能买多少山寨币(买的ETH数量，交易所现存以太坊数量,交易所现存山寨币数量)
+  //现存ETH量= 合约中的ETH总量 - 本次转账的量
   uint256 tokens_bought = price(msg.value, address(this).balance.sub(msg.value), token_reserve);
+
   //把购买到的山寨币转给发送交易指令的钱包
   require(token.transfer(msg.sender, tokens_bought));
   return tokens_bought;
 }
 //用山寨币购买ETH
 function tokenToEth(uint256 tokens) public returns (uint256) {
+  //交易所合约地址中山寨币的量
   uint256 token_reserve = token.balanceOf(address(this));
+  //可以买到的ETH量 
   uint256 eth_bought = price(tokens, token_reserve, address(this).balance);
   msg.sender.transfer(eth_bought);
   require(token.transferFrom(msg.sender, address(this), tokens));
   return eth_bought;
 }
 
+//提供流动性
 function deposit() public payable returns (uint256) {
+
   uint256 eth_reserve = address(this).balance.sub(msg.value);
   uint256 token_reserve = token.balanceOf(address(this));
   uint256 token_amount = (msg.value.mul(token_reserve) / eth_reserve).add(1);
@@ -76,7 +83,10 @@ function deposit() public payable returns (uint256) {
   require(token.transferFrom(msg.sender, address(this), token_amount));
   return liquidity_minted;
 }
+
+//取出流动性
 function withdraw(uint256 amount) public returns (uint256, uint256) {
+
   uint256 token_reserve = token.balanceOf(address(this));
   uint256 eth_amount = amount.mul(address(this).balance) / totalLiquidity;
   uint256 token_amount = amount.mul(token_reserve) / totalLiquidity;
@@ -85,5 +95,6 @@ function withdraw(uint256 amount) public returns (uint256, uint256) {
   msg.sender.transfer(eth_amount);
   require(token.transfer(msg.sender, token_amount));
   return (eth_amount, token_amount);
+  
 }
 }
